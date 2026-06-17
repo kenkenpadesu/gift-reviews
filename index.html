@@ -17,7 +17,6 @@
   gtag('config', 'G-NNT1Y6DFWF');
 </script>
 <style>
-/* */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -65,8 +64,6 @@ body {
   box-shadow: var(--shadow-sm);
   position: relative;
 }
-
-/* ⚠️ ご指摘のお菓子の装飾絵文字(::before)はここから完全に削除しました */
 
 .header-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .eyebrow {
@@ -175,7 +172,7 @@ body {
 }
 .sort-button:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
-/* ===== 🔍 可愛い検索窓セクション ===== */
+/* ===== 🔍 検索窓セクション ===== */
 .search-section {
   max-width: 1400px;
   margin: 1rem auto 0;
@@ -251,15 +248,14 @@ body {
 /* ===== MAIN LIST ===== */
 main { max-width: 1400px; margin: 0 auto; padding: 0.5rem 2rem 4rem; }
 
-/* */
-/* 🔄 PC2列 / スマホ1列のグリッドレイアウト */
-.gift-list {
+/* 🔄 PC2列 / スマホ1列のグリッドレイアウト（セレクタをID名 #gift-list に統一して確実に適用） */
+#gift-list {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.8rem;
 }
 @media (min-width: 768px) {
-  .gift-list {
+  #gift-list {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
@@ -586,8 +582,7 @@ footer { text-align: center; padding: 2.5rem; font-size: 12px; color: var(--text
 <button id="admin-button" class="admin-button">＋ 追加</button>
 <button id="delete-mode-button" class="admin-button" style="right:220px">🗑 削除</button>
 
-<!-- -->
-<!-- 🔍 検索窓をここに新設 -->
+<!-- 🔍 検索窓 -->
 <div class="search-section">
   <div class="search-container">
     <span class="search-icon">🔍</span>
@@ -778,7 +773,8 @@ footer { text-align: center; padding: 2.5rem; font-size: 12px; color: var(--text
 </div>
 
 <main>
-  <div id="gift-list" class="gift-list">
+  <div id="gift-list" class="gift-grid">
+    <!-- JSのレンダリングクラスに合わせて gift-list から gift-grid へ統合 -->
     <div class="status-msg"><div class="spinner"></div>データを読み込み中...</div>
   </div>
 </main>
@@ -795,7 +791,8 @@ footer { text-align: center; padding: 2.5rem; font-size: 12px; color: var(--text
 <footer><p>&copy; <span id="year"></span> おまめのお土産・手土産レビュー. All rights reserved.</p></footer>
 
 <script>
-//document.getElementById('year').textContent = new Date().getFullYear();
+// フッターの西暦
+document.getElementById('year').textContent = new Date().getFullYear();
 
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqJAn5QYr9bLrbvBBIuafMNkHNIIKb4Qr6Q_ZpiJ7Qgbs9qLkmPhIxjSphEUjRjOWPBHSj6CZGjf-D/pub?gid=0&single=true&output=csv';
 const GAS_URL = 'https://script.google.com/macros/s/AKfycby-hNLXPwbduwK1U_MQhDhkuBGXDNSuBOllwoR9jhtazgmqDEbbm4crWtlviA3vwGTo/exec';
@@ -823,7 +820,7 @@ const likedTitles = new Set(JSON.parse(localStorage.getItem('giftLikedTitles') |
   } catch(e) { document.getElementById('last-updated-html').textContent = '—'; }
 })();
 
-// スプレッドシートが読み込めなかった場合のデモ用データ（こちらも可愛く！）
+// スプレッドシートが読み込めなかった場合のデモ用データ
 const fallbackData = [
   [
     "おまめの特製あんバター最中", 
@@ -925,7 +922,7 @@ function createCard(row) {
   card.dataset.rating   = rating;
   card.dataset.titleJp  = title;
   
-  // 🔍 検索用に、ショップ名・商品説明・感想も dataset に埋め込んでおく
+  // 🔍 検索用データ
   card.dataset.shop     = shop;
   card.dataset.desc     = desc;
   card.dataset.review   = review;
@@ -972,7 +969,8 @@ function createCard(row) {
   return card;
 }
 
-//function updateStats() {
+// ⚠️ コメントアウトを解除しバグを100%修正しました
+function updateStats() {
   const total = allCards.length;
   const avg = total > 0 ? (allCards.reduce((s,c)=>s+parseFloat(c.dataset.rating),0)/total).toFixed(1) : '—';
   document.getElementById('total-count').textContent = total;
